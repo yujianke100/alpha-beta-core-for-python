@@ -14,7 +14,31 @@ using namespace std;
 
 #define LINE_LENGTH 1000
 
+BiGraph::BiGraph(int* inputA2, int D1, int D2, int n1, int n2)
+{
+	num_v1 = 0;
+	num_v2 = 0;
+	num_edges = 0;
 
+	neighbor_v1.clear();
+	neighbor_v2.clear();
+
+
+	degree_v1.clear();
+	degree_v2.clear();
+
+	core_v1.clear();
+	core_v2.clear();
+
+	//KKCore index left (x,*) right (*,x)
+	left_index.clear();
+	right_index.clear();
+	v1_max_degree = 0;
+	v2_max_degree = 0;
+	delta = -1;
+	// this->dir = dir;
+	loadGraph(inputA2, D1, D2, n1, n2);
+}
 
 BiGraph::BiGraph(string dir)
 {
@@ -66,44 +90,44 @@ BiGraph::BiGraph() {
 	delta = -1;
 }
 
-void BiGraph::print()
-{
-	string bigraphE = dir + "graph.e";
-	string bigraphMeta = dir + "graph.meta";
+// void BiGraph::print()
+// {
+// 	string bigraphE = dir + "graph.e";
+// 	string bigraphMeta = dir + "graph.meta";
 
-	FILE *graphEF = fopen(bigraphE.c_str(), "w");
-	FILE *graphMetaF = fopen(bigraphMeta.c_str(), "w");
+// 	FILE *graphEF = fopen(bigraphE.c_str(), "w");
+// 	FILE *graphMetaF = fopen(bigraphMeta.c_str(), "w");
 
-	fprintf(graphMetaF, "%d\n%d\n%d\n", num_v1, num_v2, num_edges);
-	fclose(graphMetaF);
-	for (int i = 0; i < num_v1; ++i)
-	{
-		for (int j = 0; j < neighbor_v1[i].size(); ++j)
-		{
-			fprintf(graphEF, "%d %d\n", i, neighbor_v1[i][j]);
-		}
-	}
-	fclose(graphEF);
-}
+// 	fprintf(graphMetaF, "%d\n%d\n%d\n", num_v1, num_v2, num_edges);
+// 	fclose(graphMetaF);
+// 	for (int i = 0; i < num_v1; ++i)
+// 	{
+// 		for (int j = 0; j < neighbor_v1[i].size(); ++j)
+// 		{
+// 			fprintf(graphEF, "%d %d\n", i, neighbor_v1[i][j]);
+// 		}
+// 	}
+// 	fclose(graphEF);
+// }
 
-void BiGraph::print(bool hash) {
-	string bigraphE = dir + "graph.e";
-	string bigraphMeta = dir + "graph.meta";
+// void BiGraph::print(bool hash) {
+// 	string bigraphE = dir + "graph.e";
+// 	string bigraphMeta = dir + "graph.meta";
 
-	FILE *graphEF = fopen(bigraphE.c_str(), "w");
-	FILE *graphMetaF = fopen(bigraphMeta.c_str(), "w");
+// 	FILE *graphEF = fopen(bigraphE.c_str(), "w");
+// 	FILE *graphMetaF = fopen(bigraphMeta.c_str(), "w");
 
-	fprintf(graphMetaF, "%d\n%d\n%d\n", neighborHash_v1.size(), neighborHash_v2.size(), num_edges);
-	fclose(graphMetaF);
-	for (int i = 0; i < neighborHash_v1.size(); ++i)
-	{
-		for (auto j = neighborHash_v1[i].begin(); j != neighborHash_v1[i].end(); ++j)
-		{
-			fprintf(graphEF, "%d %d\n", i, *j);
-		}
-	}
-	fclose(graphEF);
-}
+// 	fprintf(graphMetaF, "%d\n%d\n%d\n", neighborHash_v1.size(), neighborHash_v2.size(), num_edges);
+// 	fclose(graphMetaF);
+// 	for (int i = 0; i < neighborHash_v1.size(); ++i)
+// 	{
+// 		for (auto j = neighborHash_v1[i].begin(); j != neighborHash_v1[i].end(); ++j)
+// 		{
+// 			fprintf(graphEF, "%d %d\n", i, *j);
+// 		}
+// 	}
+// 	fclose(graphEF);
+// }
 
 void BiGraph::printCout()
 {
@@ -154,15 +178,51 @@ void BiGraph::init(unsigned int num1, unsigned int num2)
 	right_delete.resize(num_v2);
 }
 
+void BiGraph::loadGraph(int* inputA2, int D1, int D2, int n1, int n2)
+{
+	// unsigned int n1, n2;
+	unsigned int edges = 0;
+	// int u, v;
+	int r;
+
+	cout << "n1: " << n1 << " n2: " << n2 << endl;
+	cout << "D1: " << D1 << " D2: " << D2 << endl;
+	init(n1, n2);
+	cout << "init finished" << endl;
+
+	for (int i = 0; i < D1*D2; i+=D2){
+		addEdge(inputA2[i], inputA2[i+1]);
+		// if(i < D1-100)
+		// 	cout << inputA2[i] << " " << inputA2[i+1] << endl;
+	}
+	cout << "add edge finished" << endl;
+		
+
+
+	for (int i = 0; i < num_v1; ++i)
+	{
+		neighbor_v1[i].shrink_to_fit();
+		sort(neighbor_v1[i].begin(), neighbor_v1[i].end());
+
+	}
+	for (int i = 0; i < num_v2; ++i)
+	{
+		neighbor_v2[i].shrink_to_fit();
+		sort(neighbor_v2[i].begin(), neighbor_v2[i].end());
+	}
+
+
+}
+
 void BiGraph::loadGraph(string dir)
 {
 	unsigned int n1, n2;
 	unsigned int edges = 0;
-	int u, v;
+	int u, v, l;
 	int r;
 
-	string metaFile = dir + "graph.meta";
-	string edgeFile = dir + "graph.e";
+	string metaFile = dir + ".meta";
+	string edgeFile = dir + ".txt";
 
 	FILE * metaGraph = fopen(metaFile.c_str(), "r");
 	FILE * edgeGraph = fopen(edgeFile.c_str(), "r");
@@ -177,15 +237,20 @@ void BiGraph::loadGraph(string dir)
 
 	init(n1, n2);
 
-	while ((r = fscanf(edgeGraph, "%d %d", &u, &v)) != EOF)
+	// int time = 10;
+	while ((r = fscanf(edgeGraph, "%d\t%d\t%d", &u, &v, &l)) != EOF)
 	{
 		//fprintf(stderr, "%d, %d\n", u, v);
-		if (r != 2)
+		if (r != 3)
 		{
-			fprintf(stderr, "Bad file format: u v incorrect\n");
+			fprintf(stderr, "Bad file format: u v l incorrect\n");
 			exit(1);
 		}
-
+		// if(time > 0){
+		// 	cout << u << " " << v << endl;
+		// 	time --;
+		// }
+		
 		addEdge(u, v);
 		//num_edges++;
 	}

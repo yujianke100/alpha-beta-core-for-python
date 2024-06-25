@@ -53,6 +53,7 @@ class BiGraph
 
 public:
 
+	BiGraph(int* inputA2, int D1, int D2, int n1, int n2);
 	BiGraph(std::string dir);
 	BiGraph();
 	~BiGraph() {}
@@ -74,6 +75,7 @@ public:
 public:
 
 	void init(unsigned int num_v1, unsigned int num_v2);
+	void loadGraph(int* inputA2, int D1, int D2, int n1, int n2);
 	void loadGraph(std::string dir);
 	void compressGraph();
 

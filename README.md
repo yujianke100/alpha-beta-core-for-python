@@ -1,34 +1,21 @@
 # alpha-beta-core
-Graph format:
-a .meta file contains the number of edges and the number of nodes in each part. See data/example.meta
-a .e file contains all the edges. See data/example.e
 
-To build index with BasicDecom:
-./abcore -BasicDecom path_to_graph (e.g. ./abcore -BasicDecom ../data/example)
+Original project: https://github.com/boge-liu/alpha-beta-core
 
-To build index with ComShrDecom:
-./abcore -ComShrDecom path_to_graph (e.g. ./abcore -ComShrDecom ../data/example)
+## Install Environment
 
-To build index with ParallelDecom:
-./abcore -ParallelDecom path_to_graph num_cores (e.g. ./abcore -ParallelDecom ../data/example 20)
+pip install pybind11
 
-To query alpha beta core using BiCoreIndex:
-./abcore -Query path_to_graph alpha beta (e.g. ./abcore -Query ../data/example 2 3)
+*If you can use sudo:*
 
-To insert edge with BiCore-Index-Ins:
-./abcore -BiCore-Index-Ins path_to_graph vertex_1 vertex_2 (e.g. ./abcore -BiCore-Index-Ins ../data/example 3 6)
+sudo apt-get -y install libboost-all-dev
 
-To remove edge with BiCore-Index-Rem:
-./abcore -BiCore-Index-Rem path_to_graph vertex_1 vertex_2 (e.g. ./abcore -BiCore-Index-Rem ../data/example 3 7)
+*Or use conda:*
 
-To insert edge with BiCore-Index-Ins*:
-./abcore -BiCore-Index-Ins* path_to_graph vertex_1 vertex_2 (e.g. ./abcore -BiCore-Index-Ins* ../data/example 3 6)
+conda install -c conda-forge boost
 
-To remove edge with BiCore-Index-Rem*:
-./abcore -BiCore-Index-Rem* path_to_graph vertex_1 vertex_2 (e.g. ./abcore -BiCore-Index-Rem* ../data/example 3 7)
+## Build
 
-To insert edge with ParallelIns:
-./abcore -ParallelIns path_to_graph vertex_1 vertex_2 num_cores (e.g. ./abcore -BiCore-Index-Ins* ../data/example 3 6 20)
+bash build.sh
 
-To remove edge with ParallelRem:
-./abcore -ParallelRem path_to_graph vertex_1 vertex_2 num_cores (e.g. ./abcore -BiCore-Index-Rem* ../data/example 3 7 20)
+Now, you can `import pyabcore` and use it as test.py. Ensure pyabcore.*.so (linux) or pyabcore.*.pyd (windows) file is in the same folder as your Python script.
