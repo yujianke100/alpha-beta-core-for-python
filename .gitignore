@@ -2,3 +2,5 @@ pyabcore.cpython*
 /src/build
 /src/pyabcore.py
 /src/_pyabcore*
+_pyabcore*
+pyabcore.py
