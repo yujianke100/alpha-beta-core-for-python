@@ -1,4 +1,4 @@
-# alpha-beta-core
+# alpha-beta-core-for-python
 
 Original project: https://github.com/boge-liu/alpha-beta-core
 
