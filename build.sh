@@ -1,11 +1,12 @@
 # build.sh
-# pip install pybind11
-# if boost is not installed: conda install -c conda-forge boost
+# sudo apt install swig or conda install swig
+# if boost is not installed: sudo apt-get -y install libboost-all-dev or conda install -c conda-forge boost
+cd src
 if [ -d "build" ]; then
     rm -r build
 fi
-cd src
+swig -c\+\+ -python pyabcore.i
 python setup.py build_ext --inplace
-cp pyabcore.*.so pyabcore.*.pyd ../
 cd ..
+cp ./src/_pyabcore* ./src/pyabcore.py ./
 python test.py

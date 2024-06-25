@@ -188,14 +188,12 @@ void BiGraph::loadGraph(int* inputA2, int D1, int D2, int n1, int n2)
 	cout << "n1: " << n1 << " n2: " << n2 << endl;
 	cout << "D1: " << D1 << " D2: " << D2 << endl;
 	init(n1, n2);
-	cout << "init finished" << endl;
 
 	for (int i = 0; i < D1*D2; i+=D2){
 		addEdge(inputA2[i], inputA2[i+1]);
 		// if(i < D1-100)
 		// 	cout << inputA2[i] << " " << inputA2[i+1] << endl;
 	}
-	cout << "add edge finished" << endl;
 		
 
 

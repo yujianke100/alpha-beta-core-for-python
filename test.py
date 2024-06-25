@@ -9,7 +9,7 @@ max_u = max(df['u'])+1
 max_v = max(df['i'])+1
 edges = np.array(df[['u','i']], dtype=np.int32)
 test = pyabcore.Pyabcore(max_u, max_v)
-test.index(edges, edges.shape[0], edges.shape[1])
+test.index(edges)
 test.query(2, 50)
 print(np.array(test.get_left()))
 print(np.array(test.get_right()))
